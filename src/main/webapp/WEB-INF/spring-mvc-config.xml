@@ -11,24 +11,14 @@
            http://www.springframework.org/schema/mvc
            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!-- Enable component scanning -->
     <context:component-scan base-package="com.example.orgmanager"/>
 
-    <!-- Enable Spring MVC annotations -->
     <mvc:annotation-driven>
         <mvc:message-converters>
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="objectMapper" ref="objectMapper"/>
-            </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <!-- ObjectMapper for JSON -->
-    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
-        <property name="findModulesViaServiceLoader" value="true"/>
-    </bean>
-
-    <!-- Properties -->
     <bean id="propertyPlaceholder"
           class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:application.properties"/>
