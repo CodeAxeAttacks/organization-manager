@@ -1,23 +1,17 @@
 // src/main/java/com/example/orgmanager/config/HttpClientConfig.java
 package com.example.orgmanager.config;
 
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.io.HttpClientConnectionManager;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
-import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 import java.security.KeyManagementException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 
 @Configuration
 public class HttpClientConfig {
@@ -26,28 +20,29 @@ public class HttpClientConfig {
     private String service1Url;
 
     @Bean
-    public RestTemplate restTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        SSLContext sslContext = SSLContextBuilder
-                .create()
-                .loadTrustMaterial(null, (certificate, authType) -> true)
-                .build();
+    public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyManagementException {
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
 
-        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(
-                sslContext,
-                (hostname, session) -> true
-        );
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
-        HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder
-                .create()
-                .setSSLSocketFactory(sslSocketFactory)
-                .build();
+        HostnameVerifier allHostsValid = (hostname, session) -> true;
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 
-        HttpClient httpClient = HttpClients.custom()
-                .setConnectionManager(connectionManager)
-                .build();
-
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(5000);
+        factory.setReadTimeout(5000);
 
         RestTemplate restTemplate = new RestTemplate(factory);
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());

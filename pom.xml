@@ -54,12 +54,31 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- HTTP Client -->
     <dependency>
-      <groupId>org.apache.httpcomponents.client5</groupId>
-      <artifactId>httpclient5</artifactId>
-      <version>5.2.1</version>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <version>4.0.1</version>
+      <scope>provided</scope>
     </dependency>
+
+<!--    &lt;!&ndash; HTTP Client &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.apache.httpcomponents.client5</groupId>-->
+<!--      <artifactId>httpclient5</artifactId>-->
+<!--      <version>5.2.3</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.apache.httpcomponents.core5</groupId>-->
+<!--      <artifactId>httpcore5</artifactId>-->
+<!--      <version>5.2.4</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.springframework</groupId>-->
+<!--      <artifactId>spring-web</artifactId>-->
+<!--      <version>${spring.version}</version>-->
+<!--    </dependency>-->
 
     <!-- Validation -->
     <dependency>
