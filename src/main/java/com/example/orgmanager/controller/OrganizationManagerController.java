@@ -21,17 +21,19 @@ public class OrganizationManagerController {
 
     @PostMapping("/merge/{id1}/{id2}/{newName}/{newAddress}")
     public ResponseEntity<OrganizationDTO> mergeOrganizations(
-            @PathVariable Long id1,
-            @PathVariable Long id2,
-            @PathVariable String newName,
-            @PathVariable String newAddress) {
+            @PathVariable("id1") Long id1,      // ← добавить явное имя
+            @PathVariable("id2") Long id2,      // ← добавить явное имя
+            @PathVariable("newName") String newName,    // ← добавить явное имя
+            @PathVariable("newAddress") String newAddress) {  // ← добавить явное имя
 
         OrganizationDTO merged = managerService.mergeOrganizations(id1, id2, newName, newAddress);
         return ResponseEntity.status(HttpStatus.CREATED).body(merged);
     }
 
     @PostMapping("/hire/{id}")
-    public ResponseEntity<OrganizationDTO> hireEmployee(@PathVariable Long id) {
+    public ResponseEntity<OrganizationDTO> hireEmployee(
+            @PathVariable("id") Long id) {  // ← добавить явное имя
+
         OrganizationDTO updated = managerService.hireEmployee(id);
         return ResponseEntity.ok(updated);
     }
