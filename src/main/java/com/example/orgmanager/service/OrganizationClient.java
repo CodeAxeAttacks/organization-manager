@@ -1,81 +1,80 @@
+// src/main/java/com/example/orgmanager/service/OrganizationClient.java
 package com.example.orgmanager.service;
 
 import com.example.orgmanager.dto.OrganizationCreateDTO;
 import com.example.orgmanager.dto.OrganizationDTO;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
 public class OrganizationClient {
 
-    private final WebClient webClient;
+    private static final Logger log = LoggerFactory.getLogger(OrganizationClient.class);
 
-    /**
-     * Получить организацию по ID из Service 1
-     */
+    private final RestTemplate restTemplate;
+    private final String baseUrl;
+
+    @Autowired
+    public OrganizationClient(RestTemplate restTemplate, @Qualifier("service1BaseUrl") String baseUrl) {
+        this.restTemplate = restTemplate;
+        this.baseUrl = baseUrl;
+    }
+
     public OrganizationDTO getOrganization(Long id) {
         try {
-            return webClient.get()
-                    .uri("/{id}", id)
-                    .retrieve()
-                    .bodyToMono(OrganizationDTO.class)
-                    .block();
-        } catch (WebClientResponseException e) {
+            String url = baseUrl + "/" + id;
+            ResponseEntity<OrganizationDTO> response = restTemplate.getForEntity(url, OrganizationDTO.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
             log.error("Failed to get organization {}: {}", id, e.getMessage());
             throw new RuntimeException("Failed to get organization from Service 1: " + e.getStatusCode());
         }
     }
 
-    /**
-     * Создать организацию в Service 1
-     */
     public OrganizationDTO createOrganization(OrganizationCreateDTO dto) {
         try {
-            return webClient.post()
-                    .bodyValue(dto)
-                    .retrieve()
-                    .bodyToMono(OrganizationDTO.class)
-                    .block();
-        } catch (WebClientResponseException e) {
+            ResponseEntity<OrganizationDTO> response = restTemplate.postForEntity(
+                    baseUrl,
+                    dto,
+                    OrganizationDTO.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
             log.error("Failed to create organization: {}", e.getMessage());
             throw new RuntimeException("Failed to create organization in Service 1: " + e.getStatusCode());
         }
     }
 
-    /**
-     * Обновить организацию в Service 1
-     */
     public OrganizationDTO updateOrganization(Long id, OrganizationCreateDTO dto) {
         try {
-            return webClient.put()
-                    .uri("/{id}", id)
-                    .bodyValue(dto)
-                    .retrieve()
-                    .bodyToMono(OrganizationDTO.class)
-                    .block();
-        } catch (WebClientResponseException e) {
+            String url = baseUrl + "/" + id;
+            HttpEntity<OrganizationCreateDTO> request = new HttpEntity<>(dto);
+            ResponseEntity<OrganizationDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.PUT,
+                    request,
+                    OrganizationDTO.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
             log.error("Failed to update organization {}: {}", id, e.getMessage());
             throw new RuntimeException("Failed to update organization in Service 1: " + e.getStatusCode());
         }
     }
 
-    /**
-     * Удалить организацию из Service 1
-     */
     public void deleteOrganization(Long id) {
         try {
-            webClient.delete()
-                    .uri("/{id}", id)
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block();
-        } catch (WebClientResponseException e) {
+            String url = baseUrl + "/" + id;
+            restTemplate.delete(url);
+        } catch (HttpClientErrorException e) {
             log.error("Failed to delete organization {}: {}", id, e.getMessage());
             throw new RuntimeException("Failed to delete organization from Service 1: " + e.getStatusCode());
         }

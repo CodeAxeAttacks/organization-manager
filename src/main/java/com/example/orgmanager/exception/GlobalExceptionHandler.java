@@ -1,3 +1,4 @@
+// src/main/java/com/example/orgmanager/exception/GlobalExceptionHandler.java
 package com.example.orgmanager.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleRuntimeException(
             RuntimeException ex, HttpServletRequest request) {
 
-        // Проверяем если это ошибка от Service 1
         if (ex.getMessage().contains("404")) {
             ErrorResponse error = ErrorResponse.builder()
                     .timestamp(LocalDateTime.now())

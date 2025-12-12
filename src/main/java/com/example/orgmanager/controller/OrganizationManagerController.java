@@ -1,24 +1,24 @@
+// src/main/java/com/example/orgmanager/controller/OrganizationManagerController.java
 package com.example.orgmanager.controller;
 
 import com.example.orgmanager.dto.OrganizationDTO;
 import com.example.orgmanager.service.OrganizationManagerService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping
-@RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class OrganizationManagerController {
 
     private final OrganizationManagerService managerService;
 
-    /**
-     * POST /orgmanager/merge/{id1}/{id2}/{newName}/{newAddress}
-     * Объединить две организации
-     */
+    @Autowired
+    public OrganizationManagerController(OrganizationManagerService managerService) {
+        this.managerService = managerService;
+    }
+
     @PostMapping("/merge/{id1}/{id2}/{newName}/{newAddress}")
     public ResponseEntity<OrganizationDTO> mergeOrganizations(
             @PathVariable Long id1,
@@ -30,10 +30,6 @@ public class OrganizationManagerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(merged);
     }
 
-    /**
-     * POST /orgmanager/hire/{id}
-     * Нанять сотрудника
-     */
     @PostMapping("/hire/{id}")
     public ResponseEntity<OrganizationDTO> hireEmployee(@PathVariable Long id) {
         OrganizationDTO updated = managerService.hireEmployee(id);

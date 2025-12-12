@@ -1,13 +1,13 @@
-server:
-  port: 8082
-  servlet:
-    context-path: /orgmanager
-  ssl:
-    enabled: true
-    key-store: classpath:keystore-service2.p12
-    key-store-password: changeit
-    key-store-type: PKCS12
-    key-alias: service2
+#server:
+#  port: 18881
+#  servlet:
+#    context-path: /orgmanager
+#  ssl:
+#    enabled: true
+#    key-store: classpath:keystore-service2.p12
+#    key-store-password: changeit
+#    key-store-type: PKCS12
+#    key-alias: service2
 
 spring:
   application:
@@ -15,7 +15,7 @@ spring:
 
 # URL первого сервиса
 service1:
-  url: https://localhost:8081/api/v1/organizations
+  url: https://localhost:18880/api/v1/organizations
   ssl:
     trust-all: true  # Для self-signed сертификатов
 
