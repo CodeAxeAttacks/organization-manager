@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd"
+         version="4.0">
+
+    <enterprise-beans>
+        <session>
+            <ejb-name>OrganizationManagerBean</ejb-name>
+            <ejb-class>com.example.orgmanager.ejb.OrganizationManagerBean</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+
+        <session>
+            <ejb-name>OrganizationClient</ejb-name>
+            <ejb-class>com.example.orgmanager.client.OrganizationClient</ejb-class>
+            <session-type>Singleton</session-type>
+            <init-on-startup>true</init-on-startup>
+        </session>
+
+        <session>
+            <ejb-name>OrganizationManagerServiceImpl</ejb-name>
+            <ejb-class>com.example.orgmanager.soap.OrganizationManagerServiceImpl</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+    </enterprise-beans>
+
+    <assembly-descriptor>
+        <container-transaction>
+            <method>
+                <ejb-name>OrganizationManagerBean</ejb-name>
+                <method-name>*</method-name>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+        </container-transaction>
+    </assembly-descriptor>
+</ejb-jar>

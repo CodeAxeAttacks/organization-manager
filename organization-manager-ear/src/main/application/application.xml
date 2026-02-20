@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="https://jakarta.ee/xml/ns/jakartaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+             https://jakarta.ee/xml/ns/jakartaee/application_10.xsd"
+             version="10">
+
+    <application-name>organization-manager</application-name>
+    <description>Organization Manager - Microservices Architecture with EJB</description>
+
+    <!-- EJB Module -->
+    <module>
+        <ejb>organization-manager-ejb.jar</ejb>
+    </module>
+
+    <!-- Web Module -->
+    <module>
+        <web>
+            <web-uri>organization-manager-web.war</web-uri>
+            <context-root>/</context-root>
+        </web>
+    </module>
+
+</application>
